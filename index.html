@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tekton vs ArgoCD Quiz</title>
+  <style>
+    body { font-family: Arial; background: #f4f4f4; padding: 20px; }
+    .container { background: white; padding: 20px; border-radius: 10px; }
+    button { padding: 10px 20px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🚀 CI/CD Showdown</h1>
+  <p>Tekton & Argo CD Quiz</p>
+
+  <form id="quizForm">
+    <p>1. Tekton runs pipelines as?</p>
+    <input type="radio" name="q1" value="B"> Kubernetes Native Resources<br>
+    <input type="radio" name="q1" value="A"> Docker Swarm jobs<br>
+
+    <p>2. A Task contains?</p>
+    <input type="radio" name="q2" value="C"> Multiple Steps<br>
+    <input type="radio" name="q2" value="A"> Multiple Pipelines<br>
+
+    <p>3. Argo CD follows?</p>
+    <input type="radio" name="q3" value="B"> GitOps<br>
+    <input type="radio" name="q3" value="A"> Manual Ops<br>
+
+    <p>4. Tekton Chains does?</p>
+    <input type="radio" name="q4" value="C"> Signing & provenance<br>
+    <input type="radio" name="q4" value="A"> Scaling clusters<br>
+
+    <br>
+    <button type="button" onclick="checkAnswers()">Submit</button>
+  </form>
+
+  <h2 id="result"></h2>
+</div>
+
+<script>
+function checkAnswers() {
+  let score = 0;
+  const answers = { q1: "B", q2: "C", q3: "B", q4: "C" };
+
+  for (let key in answers) {
+    const selected = document.querySelector(`input[name="${key}"]:checked`);
+    if (selected && selected.value === answers[key]) {
+      score++;
+    }
+  }
+
+  document.getElementById("result").innerHTML =
+    "Your Score: " + score + "/4 🎉";
+}
+</script>
+
+</body>
+</html>
