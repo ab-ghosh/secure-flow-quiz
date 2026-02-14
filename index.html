@@ -1,56 +1,508 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Tekton vs ArgoCD Quiz</title>
-  <style>
-    body { font-family: Arial; background: #f4f4f4; padding: 20px; }
-    .container { background: white; padding: 20px; border-radius: 10px; }
-    button { padding: 10px 20px; margin-top: 10px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tekton & ArgoCD Secure Flow Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            min-height: 100vh;
+            padding: 20px;
+            animation: gradientShift 15s ease infinite;
+            background-size: 400% 400%;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .logo-badge {
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .tekton-badge {
+            background: linear-gradient(135deg, #FD495C, #FF6B6B);
+            color: white;
+        }
+
+        .argocd-badge {
+            background: linear-gradient(135deg, #F46A08, #FF8C42);
+            color: white;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-left: 6px solid;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .question-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .question-card.tekton {
+            border-left-color: #FD495C;
+        }
+
+        .question-card.argocd {
+            border-left-color: #F46A08;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .topic-badge {
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+            color: white;
+        }
+
+        .topic-badge.tekton {
+            background: linear-gradient(135deg, #FD495C, #FF6B6B);
+        }
+
+        .topic-badge.argocd {
+            background: linear-gradient(135deg, #F46A08, #FF8C42);
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            color: #222;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 15px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            font-size: 1.05em;
+        }
+
+        .option:hover {
+            transform: translateX(10px);
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%);
+            font-weight: bold;
+        }
+
+        .option.correct {
+            border-color: #4caf50;
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        }
+
+        .option.incorrect {
+            border-color: #f44336;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.3em;
+            border-radius: 50px;
+            cursor: pointer;
+            display: block;
+            margin: 40px auto 20px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .result {
+            text-align: center;
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            border-radius: 20px;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .result h2 {
+            font-size: 2.5em;
+            color: white;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .result p {
+            font-size: 1.3em;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .score-emoji {
+            font-size: 4em;
+            margin: 20px 0;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .reset-btn:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .question-card {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <div class="header">
+            <h1>Secure Flow Quiz</h1>
+            <p>Test Your Knowledge on Tekton & ArgoCD</p>
+            <div class="logo-container">
+                <div class="logo-badge tekton-badge">Tekton</div>
+                <div class="logo-badge argocd-badge">ArgoCD</div>
+            </div>
+        </div>
 
-<div class="container">
-  <h1>🚀 CI/CD Showdown</h1>
-  <p>Tekton & Argo CD Quiz</p>
+        <div id="quiz-container"></div>
 
-  <form id="quizForm">
+        <button class="submit-btn" onclick="submitQuiz()">Submit Quiz</button>
 
-    <p>2. A Task contains?</p>
-    <input type="radio" name="q2" value="C"> Multiple Steps<br>
-    <input type="radio" name="q2" value="A"> Multiple Pipelines<br>
+        <div id="result" class="result">
+            <div class="score-emoji" id="emoji"></div>
+            <h2 id="score-text"></h2>
+            <p id="feedback"></p>
+            <button class="reset-btn" onclick="resetQuiz()">Try Again</button>
+        </div>
+    </div>
 
-    <p>3. Argo CD follows?</p>
-    <input type="radio" name="q3" value="B"> GitOps<br>
-    <input type="radio" name="q3" value="A"> Manual Ops<br>
+    <script>
+        const questions = [
+            {
+                topic: 'tekton',
+                question: 'In Tekton, what does a Task contain?',
+                options: [
+                    'Multiple Pipelines',
+                    'Multiple Steps',
+                    'Multiple Workspaces only',
+                    'Multiple Triggers'
+                ],
+                correct: 1
+            },
+            {
+                topic: 'argocd',
+                question: 'What is the primary purpose of ArgoCD?',
+                options: [
+                    'Container orchestration',
+                    'Continuous Deployment using GitOps',
+                    'Container image building',
+                    'Secret management'
+                ],
+                correct: 1
+            },
+            {
+                topic: 'tekton',
+                question: 'What is the smallest unit of execution in Tekton?',
+                options: [
+                    'Pipeline',
+                    'Task',
+                    'Step',
+                    'TaskRun'
+                ],
+                correct: 2
+            },
+            {
+                topic: 'argocd',
+                question: 'What does ArgoCD continuously monitor?',
+                options: [
+                    'CPU and Memory usage',
+                    'Git repository for configuration changes',
+                    'Network traffic',
+                    'Docker registry'
+                ],
+                correct: 1
+            },
+            {
+                topic: 'tekton',
+                question: 'Which resource is used to actually execute a Pipeline in Tekton?',
+                options: [
+                    'Pipeline',
+                    'Task',
+                    'PipelineRun',
+                    'TaskRun'
+                ],
+                correct: 2
+            },
+            {
+                topic: 'argocd',
+                question: 'When ArgoCD detects a drift between Git and cluster state, what can it do?',
+                options: [
+                    'Delete the cluster',
+                    'Automatically sync to match Git (if auto-sync enabled)',
+                    'Send an email only',
+                    'Stop all deployments'
+                ],
+                correct: 1
+            },
+            {
+                topic: 'tekton',
+                question: 'What is a Workspace in Tekton used for?',
+                options: [
+                    'Defining CPU limits',
+                    'Sharing data between Tasks or Steps',
+                    'Storing environment variables only',
+                    'Creating namespaces'
+                ],
+                correct: 1
+            },
+            {
+                topic: 'argocd',
+                question: 'Which pattern does ArgoCD implement?',
+                options: [
+                    'Push-based deployment',
+                    'Pull-based GitOps deployment',
+                    'Event-driven deployment',
+                    'Manual deployment'
+                ],
+                correct: 1
+            },
+            {
+                topic: 'tekton',
+                question: 'Can a Tekton Pipeline reference multiple Tasks?',
+                options: [
+                    'No, only one Task per Pipeline',
+                    'Yes, and they can run sequentially or in parallel',
+                    'Yes, but only sequentially',
+                    'No, Pipelines cannot reference Tasks'
+                ],
+                correct: 1
+            },
+            {
+                topic: 'argocd',
+                question: 'What happens if you manually change a resource in the cluster that ArgoCD manages?',
+                options: [
+                    'ArgoCD accepts the change permanently',
+                    'ArgoCD shows the application as "OutOfSync"',
+                    'The cluster crashes',
+                    'Nothing, ArgoCD ignores manual changes'
+                ],
+                correct: 1
+            }
+        ];
 
-    <p>4. Tekton Chains does?</p>
-    <input type="radio" name="q4" value="C"> Signing & provenance<br>
-    <input type="radio" name="q4" value="A"> Scaling clusters<br>
+        let userAnswers = new Array(questions.length).fill(null);
 
-    <br>
-    <button type="button" onclick="checkAnswers()">Submit</button>
-  </form>
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
 
-  <h2 id="result"></h2>
-</div>
+            questions.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.className = `question-card ${q.topic}`;
+                card.innerHTML = `
+                    <div class="question-header">
+                        <span class="question-number">Question ${index + 1}</span>
+                        <span class="topic-badge ${q.topic}">${q.topic === 'tekton' ? 'Tekton' : 'ArgoCD'}</span>
+                    </div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" onclick="selectOption(${index}, ${optIndex})" id="q${index}-opt${optIndex}">
+                                ${String.fromCharCode(65 + optIndex)}. ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
 
-<script>
-function checkAnswers() {
-  let score = 0;
-  const answers = { q1: "B", q2: "C", q3: "B", q4: "C" };
+        function selectOption(questionIndex, optionIndex) {
+            // Clear previous selection
+            questions[questionIndex].options.forEach((_, i) => {
+                const opt = document.getElementById(`q${questionIndex}-opt${i}`);
+                opt.classList.remove('selected');
+            });
 
-  for (let key in answers) {
-    const selected = document.querySelector(`input[name="${key}"]:checked`);
-    if (selected && selected.value === answers[key]) {
-      score++;
-    }
-  }
+            // Mark new selection
+            const selected = document.getElementById(`q${questionIndex}-opt${optionIndex}`);
+            selected.classList.add('selected');
+            userAnswers[questionIndex] = optionIndex;
+        }
 
-  document.getElementById("result").innerHTML =
-    "Your Score: " + score + "/4 🎉";
-}
-</script>
+        function submitQuiz() {
+            let score = 0;
 
+            questions.forEach((q, index) => {
+                q.options.forEach((_, optIndex) => {
+                    const opt = document.getElementById(`q${index}-opt${optIndex}`);
+                    opt.style.pointerEvents = 'none';
+
+                    if (optIndex === q.correct) {
+                        opt.classList.add('correct');
+                    } else if (optIndex === userAnswers[index] && userAnswers[index] !== q.correct) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+
+                if (userAnswers[index] === q.correct) {
+                    score++;
+                }
+            });
+
+            displayResult(score);
+        }
+
+        function displayResult(score) {
+            const result = document.getElementById('result');
+            const scoreText = document.getElementById('score-text');
+            const feedback = document.getElementById('feedback');
+            const emoji = document.getElementById('emoji');
+
+            const percentage = (score / questions.length) * 100;
+
+            if (percentage === 100) {
+                emoji.textContent = '🏆';
+                scoreText.textContent = 'Perfect Score!';
+                feedback.textContent = `Amazing! You got all ${score} questions correct! You're a Tekton & ArgoCD expert!`;
+            } else if (percentage >= 80) {
+                emoji.textContent = '🌟';
+                scoreText.textContent = 'Excellent!';
+                feedback.textContent = `Great job! You scored ${score} out of ${questions.length}!`;
+            } else if (percentage >= 60) {
+                emoji.textContent = '👍';
+                scoreText.textContent = 'Good Job!';
+                feedback.textContent = `Well done! You got ${score} out of ${questions.length} correct!`;
+            } else {
+                emoji.textContent = '📚';
+                scoreText.textContent = 'Keep Learning!';
+                feedback.textContent = `You scored ${score} out of ${questions.length}. Keep exploring Tekton & ArgoCD!`;
+            }
+
+            result.style.display = 'block';
+            document.querySelector('.submit-btn').style.display = 'none';
+        }
+
+        function resetQuiz() {
+            userAnswers = new Array(questions.length).fill(null);
+            document.getElementById('result').style.display = 'none';
+            document.querySelector('.submit-btn').style.display = 'block';
+            renderQuiz();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize quiz
+        renderQuiz();
+    </script>
 </body>
 </html>
